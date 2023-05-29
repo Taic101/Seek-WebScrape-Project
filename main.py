@@ -1,6 +1,7 @@
 from requests_html import HTML, HTMLSession
 import csv
 import os
+
 session = HTMLSession()
 
 
@@ -19,10 +20,6 @@ complete_file_name = os.path.join(save_path, name_of_file)
 csv_file = open(complete_file_name, 'w+')
 csv_writer = csv.writer(csv_file)
 csv_writer.writerow(['Title', 'Company', 'Type', 'Location', 'Salary', 'Field', 'Bulletpoints', 'Description'])
-
-
-req = session.get(base_url)
-req.html.render()
 
 
 def grabJobData():
