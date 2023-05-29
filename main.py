@@ -4,24 +4,35 @@ import os
 
 session = HTMLSession()
 
-
-region = 'All-Canterbury'
-category = 'information-communication-technology'
+##Get information from user
+region = input("REGION\nRegions must be entered with a '-' symbol between each word (but not before or after) E.g: 'All-Canterbury'\nWork-From-Home is a valid region.\nIf you enter an erroneous input, such as 'idontknowwhattoput', an empty field will be used\nEnter a region: ")
+print()
+category = input("CATEGORY\nCategory must be entered with a '-' symbol between each word (but not before or after) E.g: 'information-communication-technology'\nEnter a category: ") or " "
+print()
 page = '1'
-keyword = ''
+keyword = input("KEYWORD\nSame formatting as before E.g 'software-developer'\nPlease note, if a timeout error occurs simply run the script again.\nJust press enter if you do not want to enter a keyword.\nEnter a keyword: ") or " "
+print()
+pages_to_scrape = int(input("How many pages to scrape? E.g 15\nI reccomend around 20\nPages to scrape: ") or 20)
+print()
 
-base_url= f"https://www.seek.co.nz/jobs-in-{category}/in-{region}?page={page}"
 
+##Create a base URL and use the user's input as fields
+base_url= f"https://www.seek.co.nz/{keyword}-jobs-in-{category}/in-{region}?page={page}"
 
+##Grab the user's windows username
 username = os.getlogin()
+
+##Name the file to be created and its path to be saved
 name_of_file = 'job_scrape.csv'
 save_path = f'C:/Users/{username}/Desktop/'
 complete_file_name = os.path.join(save_path, name_of_file)
-csv_file = open(complete_file_name, 'w+')
+
+##Create the csv file
+csv_file = open(complete_file_name, 'w+', encoding="utf-8")
 csv_writer = csv.writer(csv_file)
 csv_writer.writerow(['Title', 'Company', 'Type', 'Location', 'Salary', 'Field', 'Bulletpoints', 'Description'])
 
-
+##The main function for scraping job data
 def grabJobData():
     
     job = req.html.find('._1wkzzau0.a1msqi7e')
@@ -63,8 +74,8 @@ def grabJobData():
         
         csv_writer.writerow([job_title, job_company, job_type, job_location, job_salary_info, job_field, job_bulletpoints, job_description])
         
-        
-for n in range(1, 6):
+##Iterate through the pages the user chose and scrape data from each      
+for n in range(1, pages_to_scrape+1):
     page = str(n)
     base_url= f"https://www.seek.co.nz/jobs-in-{category}/in-{region}?page={page}"
     req = session.get(base_url)
